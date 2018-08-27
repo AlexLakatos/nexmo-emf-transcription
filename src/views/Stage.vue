@@ -75,31 +75,44 @@ export default {
     };
   },
   created() {
-    axios
-      .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stage${
-        this.$route.params.id}`)
-      .then((response) => {
-        // JSON responses are automatically parsed.
-        new ConversationClient({ debug: false })
-          .login(response.data.user_jwt)
-          .then((app) => {
-            console.log('*** Logged into app', app);
-            if (!this.$route.params.conversation) {
-              this.$router.push('/');
-              return undefined;
-            }
-            return app.getConversation(this.$route.params.conversation);
-          })
-          .then((conversation) => {
-            this.conversation = conversation;
-            this.loading = false;
-          });
-      })
-      .catch((e) => {
-        this.error = e;
-      });
+    if (!this.$route.params.conversation) {
+      axios
+        .get('data/stages.json')
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          this.$route.params.conversation = response.data.filter((stage) => {
+            if (stage.name === this.$route.params.id) return stage;
+          })[0].id;
+        })
+        .then(this.loginAndGetConversation)
+        .catch(console.error);
+    } else {
+      this.loginAndGetConversation();
+    }
   },
   methods: {
+    getConversation(app) {
+      console.log('*** Logged into app', app);
+      return app.getConversation(this.$route.params.conversation);
+    },
+    setConversation(conversation) {
+      this.conversation = conversation;
+      this.loading = false;
+    },
+    loginAndGetConversation() {
+      axios
+        .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stage${
+          this.$route.params.id
+        }`)
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          new ConversationClient({ debug: false })
+            .login(response.data.user_jwt)
+            .then(this.getConversation)
+            .then(this.setConversation);
+        })
+        .catch(console.error);
+    },
     startStreaming() {
       this.showDialog = false;
       this.conversation.media.enable().then((stream) => {

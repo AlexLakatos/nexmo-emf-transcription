@@ -44,49 +44,62 @@ export default {
       loading: true,
     };
   },
-  mounted() {
-    axios
-      .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stenographer${
-        this.$route.params.id}`)
-      .then((response) => {
-        // JSON responses are automatically parsed.
-        new ConversationClient({ debug: false })
-          .login(response.data.user_jwt)
-          .then((app) => {
-            console.log('*** Logged into app', app);
-            if (!this.$route.params.conversation) {
-              this.$router.push('/');
-              return undefined;
-            }
-            return app.getConversation(this.$route.params.conversation);
-          })
-          .then((conversation) => {
-            if (conversation) {
-              this.conversation = conversation;
+  methods: {
+    getConversation(app) {
+      console.log('*** Logged into app', app);
+      return app.getConversation(this.$route.params.conversation);
+    },
+    setConversation(conversation) {
+      this.conversation = conversation;
 
-              conversation.media.enable().then((stream) => {
-                this.conversation.media.mute(true, true, false);
-                const media = document.getElementById('audio');
+      conversation.media.enable().then((stream) => {
+        this.conversation.media.mute(true, true, false);
+        const media = document.getElementById('audio');
 
-                // Older browsers may not have srcObject
-                if ('srcObject' in media) {
-                  media.srcObject = stream;
-                } else {
-                  // Avoid using this in new browsers, as it is going away.
-                  media.src = window.URL.createObjectURL(stream);
-                }
-                media.onloadedmetadata = () => {
-                  media.play();
-                  this.loading = false;
-                  this.streaming = true;
-                };
-              });
-            }
-          });
-      })
-      .catch((e) => {
-        this.error = e;
+        // Older browsers may not have srcObject
+        if ('srcObject' in media) {
+          media.srcObject = stream;
+        } else {
+          // Avoid using this in new browsers, as it is going away.
+          media.src = window.URL.createObjectURL(stream);
+        }
+        media.onloadedmetadata = () => {
+          media.play();
+          this.loading = false;
+          this.streaming = true;
+        };
       });
+    },
+    loginAndGetConversation() {
+      axios
+        .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stenographer${
+          this.$route.params.id
+        }`)
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          new ConversationClient({ debug: false })
+            .login(response.data.user_jwt)
+            .then(this.getConversation)
+            .then(this.setConversation);
+        })
+        .catch(console.error);
+    },
+  },
+  mounted() {
+    if (!this.$route.params.conversation) {
+      axios
+        .get('data/stages.json')
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          this.$route.params.conversation = response.data.filter((stage) => {
+            if (stage.name === this.$route.params.id) return stage;
+          })[0].id;
+        })
+        .then(this.loginAndGetConversation)
+        .catch(console.error);
+    } else {
+      this.loginAndGetConversation();
+    }
   },
 };
 </script>
