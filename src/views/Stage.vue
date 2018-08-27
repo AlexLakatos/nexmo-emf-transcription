@@ -76,7 +76,7 @@ export default {
   },
   created() {
     axios
-      .get(`http://nexmo-in-app-demo.herokuapp.com/api/jwt/stage${
+      .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stage${
         this.$route.params.id}`)
       .then((response) => {
         // JSON responses are automatically parsed.

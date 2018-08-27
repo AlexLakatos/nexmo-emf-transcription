@@ -46,7 +46,7 @@ export default {
   },
   mounted() {
     axios
-      .get(`http://nexmo-in-app-demo.herokuapp.com/api/jwt/stenographer${
+      .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stenographer${
         this.$route.params.id}`)
       .then((response) => {
         // JSON responses are automatically parsed.

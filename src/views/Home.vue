@@ -38,7 +38,7 @@ export default {
   },
   created() {
     axios
-      .get('/data/stages.json')
+      .get('data/stages.json')
       .then((response) => {
         // JSON responses are automatically parsed.
         this.stages = response.data;
