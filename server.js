@@ -26,6 +26,9 @@ const userAcl = {
   },
 };
 
+console.log(process.env.APP_ID)
+console.log(process.env.PRIVATE_KEY)
+
 privateKey = Buffer.from(process.env.PRIVATE_KEY, 'utf-8');
 
 // endpoint that doesn't authenticate the user
