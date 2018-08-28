@@ -72,7 +72,7 @@ export default {
     },
     loginAndGetConversation() {
       axios
-        .get(`https://nexmo-in-app-demo.herokuapp.com/api/jwt/stenographer${
+        .get(`https://nexmo-emf-transcription.herokuapp.com/api/jwt/stenographer${
           this.$route.params.id
         }`)
         .then((response) => {
@@ -88,7 +88,7 @@ export default {
   mounted() {
     if (!this.$route.params.conversation) {
       axios
-        .get('data/stages.json')
+        .get('https://nexmo-emf-transcription.herokuapp.com/api/data/stages')
         .then((response) => {
           // JSON responses are automatically parsed.
           this.$route.params.conversation = response.data.filter((stage) => {

@@ -53,7 +53,7 @@ export default {
   },
   created() {
     axios
-      .get('data/stages.json')
+      .get('https://nexmo-emf-transcription.herokuapp.com/api/data/stages')
       .then((response) => {
         // JSON responses are automatically parsed.
         this.stages = response.data;
