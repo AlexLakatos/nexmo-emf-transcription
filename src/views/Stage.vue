@@ -178,7 +178,7 @@ export default {
         }`)
         .then((response) => {
           // JSON responses are automatically parsed.
-          const rtc = new ConversationClient({
+          new ConversationClient({
             debug: false,
             rtcstats: {
               emit_events: true,
@@ -187,9 +187,6 @@ export default {
             .login(response.data.user_jwt)
             .then(this.getConversation)
             .then(this.setConversation);
-          rtc.on('disconnect', () => {
-            console.log('disconnect');
-          });
         })
         .catch(console.error);
     },
