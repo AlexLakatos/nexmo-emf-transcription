@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.c718d3d8c770f6598b06fe9d5351aaa3.js"
+  "/precache-manifest.f070ee3610dce841da51c860cafd88c1.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "nexmo-emf-transcription"});
