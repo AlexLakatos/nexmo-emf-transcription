@@ -33,7 +33,7 @@
 
 <script>
 import axios from 'axios';
-import * as ConversationClient from 'nexmo-stitch';
+import ConversationClient from 'nexmo-stitch';
 
 export default {
   name: 'stenographer',
@@ -77,7 +77,7 @@ export default {
         }`)
         .then((response) => {
           // JSON responses are automatically parsed.
-          new ConversationClient({ debug: false })
+          new ConversationClient({ debug: false, rtcstats_enabled: false })
             .login(response.data.user_jwt)
             .then(this.getConversation)
             .then(this.setConversation);

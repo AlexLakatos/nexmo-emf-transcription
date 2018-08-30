@@ -13,6 +13,7 @@ module.exports = {
     'max-len': 'off',
     'consistent-return': 'off',
     'array-callback-return': 'off',
+    'no-undef': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',
